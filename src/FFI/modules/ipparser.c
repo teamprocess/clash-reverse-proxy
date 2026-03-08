@@ -38,10 +38,14 @@ int xff_parser (const char *xff, int len, int max_find, abt_ip_t *results) {
 
         // 왼쪽 공백 제거
         while (start <= end && isspace(*start)) start++;
-        
-        results[found_count].ip_ptr = start; 
-        results[found_count].ip_len = (int)(end - start + 1);
-        
-        found_count++;
+
+        // 시작이 끝보다 작거나 같은 경우에만 결과 배열에 저장 (유효한 IP 주소로 간주)
+        if (start <= end) {
+            results[found_count].ip_ptr = start; 
+            results[found_count].ip_len = (int)(end - start + 1);
+            found_count++;
+        }
     }
+
+    return found_count; // 실제로 찾은 IP 개수 반환 
 }

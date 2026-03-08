@@ -4,8 +4,20 @@ local ffi = _G.core.ffi
 local ipmatcher = require("modules.resty.ipmatcher")
 local customException = require("scripts.exceptions")
 
-local lib_path = ngx.config.prefix() .. "src/modules/lib/libipparser.so"
-local ipparser_lib = ffi.load(lib_path)
+local prefix = ngx.config.prefix()
+if prefix:sub(-1) ~= "/" then
+    prefix = prefix .. "/"
+end
+
+-- 2. 프로젝트 폴더 내 라이브러리 위치를 확정합니다.
+local lib_path = prefix .. "src/FFI/lib/libipparser.so"
+
+-- 3. 로드 (에러 시 상세 로그 출력)
+local status, ipparser_lib = pcall(ffi.load, lib_path)
+if not status then
+    ngx.log(ngx.ERR, "[FFI] 라이브러리 로드 실패. 시도 경로: ", lib_path, " | 에러: ", ipparser_lib)
+    -- 필요시 여기서 에러 처리
+end
 
 local _M = {}
 

@@ -3,7 +3,7 @@ _G.core = {}
 
 -- 라이브러리 모듈 로드, 한번에 로드해서 불필요한 메모리 사용 절약
 _G.core.http = require("resty.http")
-_G.core.json = require("cjson.safe")
+_G.core.cjson = require("cjson.safe")
 _G.core.redis = require("resty.redis")
 _G.core.ffi = require("ffi")
 
