@@ -18,7 +18,7 @@ ffi.cdef[[
     int xff_parser (const char *xff, int len, int max_find, abt_ip_t *results);
 ]]
 
-function _M.ip_collecter() 
+function _M.collect() 
     local remote_ip = ngx.var.remote_addr
     local client_xff = ngx.var.http_x_forwarded_for
 

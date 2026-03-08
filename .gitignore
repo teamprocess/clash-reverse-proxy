@@ -4,7 +4,6 @@ temp/*
 *.log
 
 
-
 # --- 임시 및 실행 파일 ---
 logs/*.log
 *_temp/
