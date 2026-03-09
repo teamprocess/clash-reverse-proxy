@@ -55,11 +55,12 @@ function _M.collect()
         ngx.log(ngx.ERR, string.format("[%d번 IP] %s", i+1, ip))
     end
 
-    local tcp_ip = ffi.string(results[0].ip_ptr, results[0].ip_len)
-    if tcp_ip ~= remote_ip then
-        ngx.log(ngx.ERR, string.format("TCP IP와 XFF IP가 다릅니다. TCP IP: %s, XFF IP: %s", remote_ip, tcp_ip))
-        return customException.customException(ngx.HTTP_FORBIDDEN, "TCP IP와 XFF IP가 다릅니다.")
-    end
+    -- TCP IP와 XFF IP가 다를 경우 예외처리 (보안 강화는 되지만 서비스 사용에 불편함이 있을 수 있음)
+    -- local tcp_ip = ffi.string(results[0].ip_ptr, results[0].ip_len)
+    -- if tcp_ip ~= remote_ip then
+    --     ngx.log(ngx.ERR, string.format("TCP IP와 XFF IP가 다릅니다. TCP IP: %s, XFF IP: %s", remote_ip, tcp_ip))
+    --     return customException.customException(ngx.HTTP_FORBIDDEN, "TCP IP와 XFF IP가 다릅니다.")
+    -- end
 end
 
 -- 나중에 function과 모듈 사용해서 예외처리 만들기 ( 만들엇음 )
