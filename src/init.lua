@@ -10,7 +10,8 @@ _G.core.ffi = require("ffi")
 
 -- reCAPTCHA v3 키 불러오기
 
-_G.core.recaptcha_secret_key = "" -- 후에 osgetenv으로 도커에서 불러올 예정
+local env_decoder = require("src.modules.resty.envdecoder")
+_G.core.recaptcha_secret_key = env_decoder.decode(".env", "RECAPTCHA_SECRET_KEY")
 if _G.core.recaptcha_secret_key == nil then
     ngx.log(ngx.ERR, "reCAPTCHA 시크릿 키가 설정되지 않았습니다.")
     ngx.status = ngx.HTTP_INTERNAL_SERVER_ERROR

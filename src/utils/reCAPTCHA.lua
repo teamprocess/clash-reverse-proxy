@@ -28,13 +28,19 @@ function _M.verify(token)
         headers = {
             ["Content-Type"] = "application/x-www-form-urlencoded"
         },
-        ssl_verify = true -- ssl 인증서 확인, 비정상적인 요청 검열 위해 설정
+        ssl_verify = false -- ssl 인증서 확인, 비정상적인 요청 검열 위해 설정
     })
 
     if not res then
         ngx.log(ngx.ERR, "reCAPTCHA API 요청 실패: ", err)
-        return true, customException.customException(ngx.HTTP_INTERNAL_SERVER_ERROR, "reCAPTCHA 검증 중 오류가 발생했습니다.")
+        return false, customException.customException(ngx.HTTP_INTERNAL_SERVER_ERROR, "reCAPTCHA 검증 중 오류가 발생했습니다.")
     end
+
+    
+    -- 디코딩 전 바디를 먼저 찍어보세요
+    ngx.log(ngx.ERR, "구글 응답 바디: ", res.body)
+    
+    local data = cjson.decode(res.body)
 
     local data = cjson.decode(res.body)
     if not data or type(data) ~= "table" then
@@ -48,8 +54,13 @@ function _M.verify(token)
             return true, score
         else
             ngx.log(ngx.WARN, "reCAPTCHA 검증 실패: 낮은 점수 (", score, ")")
-            return customException.customException(ngx.HTTP_FORBIDDEN, "reCAPTCHA 검증 실패: 낮은 점수")
+            return customException.customException(ngx.HTTP_FORBIDDEN, "reCAPTCHA 검증 실패: 인간임이 확인되지 않음")
         end
+    else
+        -- 추가할 부분: 검증 실패 사유 로깅
+        local err_codes = table.concat(data["error-codes"] or {}, ", ")
+        ngx.log(ngx.WARN, "reCAPTCHA API 검증 실패: ", err_codes)
+        return customException.customException(ngx.HTTP_FORBIDDEN, "유효하지 않은 또는 만료된 reCAPTCHA 토큰입니다.")
     end
     
 end

@@ -2,6 +2,7 @@ local ip_collecter = require("modules.IP.ipcollecter")
 local customException = require("scripts.exceptions")
 local recaptcha = require("utils.reCAPTCHA")
 
+
 local _M = {}
 
 function _M.authenticate()
