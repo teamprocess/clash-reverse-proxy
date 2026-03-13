@@ -1,7 +1,6 @@
 local cjson = _G.core.json
 local maxminddb = _G.core.maxminddb
 local ffi = _G.core.ffi
-local ipmatcher = require("modules.resty.ipmatcher")
 local customException = require("scripts.exceptions")
 
 local prefix = ngx.config.prefix()
@@ -54,6 +53,7 @@ function _M.collect()
         local ip = ffi.string(results[i].ip_ptr, results[i].ip_len)
         ngx.log(ngx.ERR, string.format("[%d번 IP] %s", i+1, ip))
     end
+
 
     -- TCP IP와 XFF IP가 다를 경우 예외처리 (보안 강화는 되지만 서비스 사용에 불편함이 있을 수 있음)
     -- local tcp_ip = ffi.string(results[0].ip_ptr, results[0].ip_len)
